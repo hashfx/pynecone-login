@@ -1,8 +1,47 @@
 import pynecone as pc
+import pyrebase
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# firebase config
+config = {
+    apiKey: os.getenv('apiKey'),
+    authDomain: os.getenv('authDomain'),
+    projectId: os.getenv('projectId'),
+    storageBucket: os.getenv('storageBucket'),
+    messagingSenderId: os.getenv('messagingSenderId'),
+    appId: os.getenv('appId'),
+    measurementId: os.getenv('measurementId')
+}
+
+# pyrebase init
+firebase = pyrebase.initialize_app(config)
+auth = firebase.auth()  # gives access to firebase auth
+
+# main state class
+
+
+class State(pc.state):
+    pass
+
+def user_sign_in(self):
+    try:
+        # authenticate user
+        user = auth.sign_in_with_email_and_password(
+            self.email_value,
+            self.password_value,
+        )
+        # if user is registered
+        if user["registered"]:
+            # change UI color scheme
+            print(registered)
+    except Exception as e:
+        # change UI color scheme
+        pass
 
 # input field
-
-
 def get_input_field(icon: str, placeholder: str, _type: str):
     return pc.container(
         # horizontally stack icon and input field
@@ -13,19 +52,19 @@ def get_input_field(icon: str, placeholder: str, _type: str):
                 fontSize="11px",
             ),
             pc.input(
-                placeholder = placeholder,
-                border = "0px",
-                focus_border_color = "None",
-                color = "white",
-                fontWeight = "semibold",
-                fontSize = "11px",
-                type = _type,
+                placeholder=placeholder,
+                border="0px",
+                focus_border_color="None",
+                color="white",
+                fontWeight="semibold",
+                fontSize="11px",
+                type=_type,
             ),
         ),
         # container settings
-        borderBottom = "0.1px solid gray",
-        width = "300px",
-        height = "45px",
+        borderBottom="0.1px solid gray",
+        width="300px",
+        height="45px",
     )
 
 
@@ -75,25 +114,26 @@ def index():
             pc.container(
                 pc.text(
                     "Forgot Password",
-                    color = "white",
-                    fontSize = "12px",
-                    textAlign = "end",
+                    color="white",
+                    fontSize="12px",
+                    textAlign="end",
                 )
             ),
-            pc.container(height = "55px"),
+            pc.container(height="55px"),
 
             # form button
             pc.container(
                 pc.button(
                     pc.text(
                         "Sign In",
-                        color = "white",
-                        weight = "bold",
+                        color="white",
+                        weight="bold",
+                        on_double_click=lambda: State.user_sign_in()
                     ),
                     # button settings
-                    width = "300px",
-                    height = "45px",
-                    color_scheme = "blue"
+                    width="300px",
+                    height="45px",
+                    color_scheme="blue"
                 ),
             ),
         ),
